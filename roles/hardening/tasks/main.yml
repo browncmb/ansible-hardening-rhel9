@@ -1,2 +1,47 @@
 ---
-# tasks file for roles/hardening
+# Firewall
+- name: Install base hardening packages
+  ansible.builtin.dnf:
+    name: "{{ hardening_base_packages }}"
+    state: present
+  tags:
+    - firewall
+    - packages
+
+- name: Ensure firewalld is running and enabled
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: true
+  tags:
+    - firewall
+
+- name: Allow required services through firewalld
+  ansible.posix.firewalld:
+    zone: "{{ hardening_firewall_zone }}"
+    service: "{{ firewall_service }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ hardening_firewall_services_allowed }}"
+  loop_control:
+    loop_var: firewall_service
+    label: "{{ firewall_service }}"
+  notify: Reload firewalld
+  tags:
+    - firewall
+
+- name: Remove blocked services from firewalld
+  ansible.posix.firewalld:
+    zone: "{{ hardening_firewall_zone }}"
+    service: "{{ firewall_service }}"
+    permanent: true
+    immediate: true
+    state: disabled
+  loop: "{{ hardening_firewall_services_blocked }}"
+  loop_control:
+    loop_var: firewall_service
+    label: "{{ firewall_service }}"
+  notify: Reload firewalld
+  tags:
+    - firewall

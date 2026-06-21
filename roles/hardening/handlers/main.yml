@@ -1,2 +1,5 @@
 ---
-# handlers file for roles/hardening
+- name: Reload firewalld
+  ansible.builtin.service:
+    name: firewalld
+    state: reloaded
