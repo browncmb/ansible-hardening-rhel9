@@ -1,2 +1,32 @@
 ---
-# defaults file for roles/hardening
+# Firewall
+hardening_firewall_zone: public
+
+hardening_firewall_services_allowed:
+  - ssh
+  - freeipa-ldap
+  - freeipa-ldaps
+  - dns
+  - nfs
+
+hardening_firewall_services_blocked:
+  - telnet
+  - ftp
+
+# SELinux
+hardening_selinux_state: enforcing
+hardening_selinux_policy: targeted
+
+hardening_selinux_booleans:
+  - name: use_nfs_home_dirs
+    state: true
+  - name: ssh_sysadm_login
+    state: false
+  - name: httpd_can_network_connect
+    state: false
+
+# fail2ban
+hardening_fail2ban_bantime: 3600
+hardening_fail2ban_findtime: 600
+hardening_fail2ban_maxretry: 5
+hardening_fail2ban_ignoreip: []
