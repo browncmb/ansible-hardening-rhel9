@@ -74,3 +74,47 @@
     label: "{{ selinux_boolean.name }}"
   tags:
     - selinux
+
+# fail2ban
+- name: Import EPEL GPG key
+  ansible.builtin.rpm_key:
+    key: "{{ hardening_epel_gpg_key }}"
+    state: present
+  tags:
+    - fail2ban
+    - packages
+
+- name: Install EPEL repository
+  ansible.builtin.dnf:
+    name: "{{ hardening_epel_rpm }}"
+    state: present
+  tags:
+    - fail2ban
+    - packages
+
+- name: Install fail2ban packages
+  ansible.builtin.dnf:
+    name: "{{ hardening_epel_packages }}"
+    state: present
+  tags:
+    - fail2ban
+    - packages
+
+- name: Deploy fail2ban jail configuration
+  ansible.builtin.template:
+    src: hardening.conf.j2
+    dest: "{{ hardening_fail2ban_jail_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart fail2ban
+  tags:
+    - fail2ban
+
+- name: Ensure fail2ban is running and enabled
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: true
+  tags:
+    - fail2ban

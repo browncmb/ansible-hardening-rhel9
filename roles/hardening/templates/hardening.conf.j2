@@ -1,0 +1,17 @@
+[DEFAULT]
+# Use the systemd backend to parse SSH authentication events from journald.
+# RHEL 9 monitors SSH events through the journal instead of /var/log/secure.
+backend = systemd
+
+bantime = {{ hardening_fail2ban_bantime }}
+findtime = {{ hardening_fail2ban_findtime }}
+maxretry = {{ hardening_fail2ban_maxretry }}
+
+ignoreip = 127.0.0.1/8 ::1 {{ ansible_facts['default_ipv4']['address'] }}{% if hardening_fail2ban_ignoreip %} {{ hardening_fail2ban_ignoreip | join(' ') }}{% endif %}
+
+[sshd]
+enabled = true
+port = ssh
+filter = sshd
+logpath = journal
+backend = systemd
