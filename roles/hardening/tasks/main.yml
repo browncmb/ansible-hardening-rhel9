@@ -45,3 +45,32 @@
   notify: Reload firewalld
   tags:
     - firewall
+
+# SELinux
+- name: Set SELinux mode
+  ansible.posix.selinux:
+    policy: "{{ hardening_selinux_policy }}"
+    state: "{{ hardening_selinux_state }}"
+  register: selinux_result
+  tags:
+    - selinux
+
+- name: Reboot if SELinux mode change requires it
+  ansible.builtin.reboot:
+    msg: "Rebooting to apply SELinux mode change"
+    reboot_timeout: 300
+  when: selinux_result.reboot_required | default(false)
+  tags:
+    - selinux
+
+- name: Set SELinux booleans
+  ansible.posix.seboolean:
+    name: "{{ selinux_boolean.name }}"
+    state: "{{ selinux_boolean.state }}"
+    persistent: true
+  loop: "{{ hardening_selinux_booleans }}"
+  loop_control:
+    loop_var: selinux_boolean
+    label: "{{ selinux_boolean.name }}"
+  tags:
+    - selinux
