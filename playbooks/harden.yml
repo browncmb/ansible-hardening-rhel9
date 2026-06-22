@@ -1,0 +1,7 @@
+---
+- name: Apply system hardening role
+  hosts: hardening_targets
+  become: true
+
+  roles:
+    - role: hardening
