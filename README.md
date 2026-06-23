@@ -274,6 +274,7 @@ The hardening workflow validated that:
 * SSH authentication events were monitored through journald
 * Manual SSH bans were delegated to firewalld through rich rules
 * Test bans were removed after unbanning
+* The hardening role and playbooks passed ansible-lint validation with 0 failures and 0 warnings
 * Ansible control access remained available after hardening
 * FreeIPA user authentication still worked after hardening
 * FreeIPA identity resolution and NFS/autofs home directory access remained functional
@@ -299,6 +300,7 @@ This project demonstrates:
 * Jinja2 template deployment
 * Handler-based service management
 * Ansible tag-based execution
+* Ansible linting and role quality validation
 * Inventory-based test-to-prod promotion
 * Idempotency testing
 * Operational validation after hardening
@@ -307,4 +309,4 @@ This project demonstrates:
 
 ## Result
 
-This project provides a repeatable Ansible workflow for applying selected Linux system hardening controls across RHEL 9 lab systems. The final workflow ties together firewalld service control, SELinux enforcement, fail2ban SSH protection, idempotent role design, and staged test-to-prod validation while confirming that Ansible control access, FreeIPA authentication, and NFS/autofs home directory access remain functional after hardening.
+This project provides a repeatable Ansible workflow for applying selected Linux system hardening controls across RHEL 9 lab systems. The final workflow ties together firewalld service control, SELinux enforcement, fail2ban SSH protection, idempotent role design, staged test-to-prod validation, and ansible-lint quality validation while confirming that Ansible control access, FreeIPA authentication, and NFS/autofs home directory access remain functional after hardening.
